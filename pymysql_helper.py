@@ -46,8 +46,8 @@ def _get_creds(user = None,
 
     return creds
 
-class pyMySqlHelpers(object):
-    """**class pyMySqlHelpers**: common helper fuctions given a pyMySql cursor
+class pyMySqlWrap(object):
+    """**class pyMySqlWrap**: common helper fuctions given a pyMySql cursor
     
     If initialized with an active cursor, the `tables` attribute
     will be populated with the available tables with some descriptive
@@ -280,8 +280,8 @@ class pyMySqlHelpers(object):
         
     
 
-class pyMySqlConnectionHelper(pyMySqlHelpers):
-    """**class pyMySqlConnectionHelper**: Child class of `pyMySqlHelpers`
+class pyMySqlConnectionHelper(pyMySqlWrap):
+    """**class pyMySqlConnectionHelper**: Child class of `pyMySqlWrap`
     Intended to aid setting up the connection.
     
     **Additional Visible Attributes**:
@@ -298,7 +298,7 @@ class pyMySqlConnectionHelper(pyMySqlHelpers):
     
     """
     
-    __doc__ += pyMySqlHelpers.__doc__
+    __doc__ += pyMySqlWrap.__doc__
     
     def __init__(self, 
                  creds = {}, 
