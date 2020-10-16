@@ -3,6 +3,8 @@ import json
 import pymysql
 import pandas as pd
 
+__all__ = ['pyMySqlWrap', 'pyMySqlConnectionHelper']
+
 def _get_creds(user = None, 
                password = None, 
                host = None, 
