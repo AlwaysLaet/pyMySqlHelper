@@ -232,6 +232,10 @@ class pyMySqlWrap(object):
             cursor = self.cursor
             if not cursor:
                 raise ValueError("No cursor found to create table chunk.")
+        if (not keep_cols) or ('*' in keep_cols):
+            colnames = tbl.setdefault('colnames', self.get_table_colnames(table_name, cursor))
+        else:
+            colnames = keep_cols
         if not keep_cols:
             keep_cols = ['*']
         cursor.execute(f"""
@@ -264,10 +268,6 @@ class pyMySqlWrap(object):
             return False
         tbl = self.tables.get(table_name)
         nrows = tbl.setdefault('nrows', self.get_table_nrows(table_name, cursor))
-        if (not keep_cols) or ('*' in keep_cols):
-            colnames = tbl.setdefault('colnames', self.get_table_colnames(table_name, cursor))
-        else:
-            colnames = keep_cols
         chunk_size = nrows // n_chunks
         chunk_sizes = [chunk_size]*(n_chunks-1) + [nrows - chunk_size*(n_chunks-1)]
         
