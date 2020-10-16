@@ -1,1 +1,1 @@
-from . import pyMySqlWrap, pyMySqlConnectionHelper
+from .pymysql_helper import pyMySqlWrap, pyMySqlConnectionHelper
