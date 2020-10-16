@@ -225,7 +225,9 @@ class pyMySqlWrap(object):
                   start_idx, 
                   chunk_size, 
                   cursor = None,
-                  keep_cols = []):
+                  keep_cols = [],
+                  as_pandas = True,
+                  index = None):
         if not cursor:
             cursor = self.cursor
             if not cursor:
@@ -237,7 +239,14 @@ class pyMySqlWrap(object):
             FROM {table_name}
             LIMIT {start_idx},{chunk_size};
         """)
-        return cursor.fetchall()
+        cnk = cursor.fetchall()
+        if as_pandas:
+                try:
+                    return pd.DataFrame(cnk, columns = colnames, index = index)
+                except Exception as e:
+                    print("Issue coericing to data frame. Yielding raw chunk.")
+                    pass
+        return cnk 
     
     def generate_chunks(self, 
                         table_name,  
@@ -264,21 +273,16 @@ class pyMySqlWrap(object):
         
         start_idx = 1
         for cs in chunk_sizes:
+            index = range(start_idx-1, start_idx-1+cs) if respect_index else None
             cnk = self.get_chunk(table_name = table_name, 
                                  cursor = cursor, 
                                  start_idx = start_idx, 
                                  chunk_size = cs, 
-                                 keep_cols = keep_cols)
-            if as_pandas:
-                index = range(start_idx-1, start_idx-1+cs) if respect_index else None
-                try:
-                    yield pd.DataFrame(cnk, columns = colnames, index = index)
-                except Exception as e:
-                    print("Issue coericing to data frame. Yielding raw chunk.")
-                    yield cnk
-            else:
-                yield cnk           
+                                 keep_cols = keep_cols,
+                                 as_pandas = as_pandas,
+                                 index = index)          
             start_idx += cs
+            yield cnk
         
     
 
